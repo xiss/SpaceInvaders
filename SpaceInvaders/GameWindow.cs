@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks.Dataflow;
 
 namespace SpaceInvaders
 {
@@ -11,86 +12,83 @@ namespace SpaceInvaders
         private const int WidthSidebar = 20;
 
         // Графика отрисовки интерфейса
-        private const char Lt = '┌';
-        private const char Rt = '┐';
-        private const char Lb = '└';
-        private const char Rb = '┘';
-        private const char Hor = '─';
-        private const char Ver = '│';
-        private const char Mt = '┬';
-        private const char Mb = '┴';
+        private const char Lt = '╔';
+        private const char Rt = '╗';
+        private const char Lb = '╚';
+        private const char Rb = '╝';
+        private const char Hor = '═';
+        private const char Ver = '║';
+        private const char Mt = '╦';
+        private const char Mb = '╩';
 
-        private Feild feild;
+        private Feild _feild;
 
-        private static GameWindow instance = null;
+        private static GameWindow _instance;
         private GameWindow()
         {
-            feild = new Feild();
+            Console.Clear();
+            Console.CursorVisible = false;
+            Console.SetWindowSize(WidthField + WidthSidebar, Height);
+            Console.SetBufferSize(WidthField + WidthSidebar, Height);
+            Console.Title = "SpaceInvaders ";
         }
 
         public static GameWindow GetGameWindow()
         {
-            if (instance != null) return instance;
-            Console.CursorVisible = false;
-
-            Console.SetWindowSize(WidthField + WidthSidebar, Height);
-            Console.SetBufferSize(WidthField + WidthSidebar, Height);
-            Console.Title = "SpaceInvaders ";
-
-            return new GameWindow();
+            if (_instance == null)
+            {
+                _instance = new GameWindow();
+                _instance._feild = Feild.GetFeild(WidthField, Height);
+            }
+            return _instance;
         }
+
+        public ConsoleKeyInfo Input { get; set; }
 
         public void Render()
         {
             RenderSelf();
-            feild.Render();
+            _feild.Render();
         }
 
-        public bool ToRender { get; set; } = true;
+        private bool _toRender = true;
 
         private void RenderSelf()
         {
-            if (!ToRender) return;
-            Console.Clear();
+            if (!_toRender) return;
             // Рисуем углы
-            Console.SetCursorPosition(0, 0);
-            Console.Write(Lt);
-            Console.SetCursorPosition(WidthField + WidthSidebar - 1, 0);
-            Console.Write(Rt);
-            Console.SetCursorPosition(0, Height - 1);
-            Console.Write(Lb);
-            Console.SetCursorPosition(WidthField + WidthSidebar - 1, Height - 1);
-            Console.Write(Rb);
+            Write(0, 0, Lt);
+            Write(WidthField + WidthSidebar - 1, 0, Rt);
+            Write(0, Height - 1, Lb);
+            Write(WidthField + WidthSidebar - 1, Height - 1, Rb);
             // Рисуем вертикальные линии
             for (int h = 1; h < Height - 1; h++)
             {
-                Console.SetCursorPosition(0, h);
-                Console.Write(Ver);
-                Console.SetCursorPosition(WidthField, h);
-                Console.Write(Ver);
-                Console.SetCursorPosition(WidthField + WidthSidebar - 1, h);
-                Console.Write(Ver);
+                Write(0, h, Ver);
+                Write(WidthField, h, Ver);
+                Write(WidthField + WidthSidebar - 1, h, Ver);
             }
             // Рисуем горизонтальные линии
             for (int w = 1; w < WidthField + WidthSidebar - 1; w++)
             {
-                Console.SetCursorPosition(w, 0);
-                Console.Write(Hor);
-                Console.SetCursorPosition(w, Height - 1);
-                Console.Write(Hor);
+                Write(w, 0, Hor);
+                Write(w, Height - 1, Hor);
             }
             // Рисуем стыки
-            Console.SetCursorPosition(WidthField, Height - 1);
-            Console.Write(Mb);
-            Console.SetCursorPosition(WidthField, 0);
-            Console.Write(Mt);
-
-            ToRender = false;
+            Write(WidthField, Height - 1, Mb);
+            Write(WidthField, 0, Mt);
+            _toRender = false;
         }
 
         public void Update()
         {
-            (feild as IUpdatable).Update();
+            (_feild as IUpdatable).Update();
+        }
+
+        public static void Write(int left, int top, char ch)
+        {
+            Console.SetCursorPosition(left, top);
+            Console.Write(ch);
         }
     }
 }
