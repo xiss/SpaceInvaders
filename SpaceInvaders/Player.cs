@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using SpaceInvaders.Interfaces;
 
 namespace SpaceInvaders
 {
@@ -6,7 +9,7 @@ namespace SpaceInvaders
     {
         private static Player _instance;
         private GameWindow _gameWindow;
-        private Feild _feild;
+        private Field _field;
         private bool _toRender;
         private int _curPos;
         private int _newPos;
@@ -22,43 +25,59 @@ namespace SpaceInvaders
             {
                 _instance = new Player();
                 _instance._gameWindow = GameWindow.GetGameWindow();
-                _instance._feild = Feild.GetFeild();
+                _instance._field = Field.GetFeild();
 
                 // Определяем начальную позицию
-                _instance._curPos = _instance._feild. Width / 2;
+                _instance._curPos = (_instance._field.Width / 2) - 1;
                 _instance._newPos = _instance._curPos;
-                _instance._feild[_instance._curPos, _instance._feild.Height - 1] = Feild.PixelType.Player;
+                _instance._field[_instance._curPos, _instance._field.Height - 1] = _instance;
             }
             return _instance;
         }
-        public void Render()
+        public async Task Render(List<Task> tasks)
         {
-            if (_toRender)
-            {
-                // Стираем старую позицию и рисуем новую, так же обновляем масссив для проверки коллизии
-                GameWindow.Write(_curPos, _instance._feild.Height - 2, ' ');
-                GameWindow.Write(_newPos, _instance._feild.Height - 2, 'P');
-                _feild[_curPos, _instance._feild.Height - 2] = Feild.PixelType.Free;
-                _feild[_newPos, _instance._feild.Height - 2] = Feild.PixelType.Player;
-                
-                _toRender = false;
-                _curPos = _newPos;
-            }
+            Task task = Task.Run(() =>
+           {
+               if (_toRender)
+               {
+                    // Стираем старую позицию и рисуем новую, так же обновляем масссив для проверки коллизии
+                    _field.Write(_curPos, _field.Height , ' ');
+                   _field.Write(_newPos, _field.Height , 'P');
+                   _field[_curPos, _field.Height ] = null;
+                   _field[_newPos, _field.Height ] = this;
+
+                   _toRender = false;
+                   _curPos = _newPos;
+               }
+           });
+            tasks.Add(task);
+            await task;
         }
 
-        public void Update()
+        public async Task Update(List<Task> tasks)
         {
-            if (_gameWindow.Input.Key == ConsoleKey.A && _curPos > 1)
+            Task task = Task.Run(() =>
             {
-                _newPos--;
-                _toRender = true;
-            }
+                if (_gameWindow.Input.Key == ConsoleKey.A && _curPos > 0)
+                {
+                    _newPos--;
+                    _toRender = true;
+                }
 
-            if (_gameWindow.Input.Key == ConsoleKey.D && _curPos < _feild.Width - 1)
-            {
-                _newPos++;
-                _toRender = true;
-            }
+                if (_gameWindow.Input.Key == ConsoleKey.D && _curPos < _field.Width)
+                {
+                    _newPos++;
+                    _toRender = true;
+                }
+
+                if (_gameWindow.Input.Key == ConsoleKey.Spacebar)
+                {
+                    _field.AddRocket(_curPos, _field.Height - 2);
+                    Statistics.GetStatistics().RocketUsed++;
+                }
+            });
+            tasks.Add(task);
+            await task;
         }
     }
 }

@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SpaceInvaders
 {
-    class Program
+    class Game
     {
-        static void Main(string[] args)
+        public static List<Task> RenderTasks { get; } = new List<Task>();
+        public static List<Task> UpdateTasks { get; } = new List<Task>();
+        static async Task Main(string[] args)
         {
             bool abort = false;
             GameWindow gameWindow = GameWindow.GetGameWindow();
@@ -26,11 +30,18 @@ namespace SpaceInvaders
                             break;
                     }
                 }
+                // Запускаем все задачи на рендериг и обновление
+                //TODO Нужны WaitAll или нет?
+                RenderTasks.Clear();
+                await gameWindow.Render(RenderTasks);
+                Task.WaitAll(RenderTasks.ToArray());
 
-
-                gameWindow.Render();
-                gameWindow.Update();
-                Thread.Sleep(50);
+                UpdateTasks.Clear();
+                await gameWindow.Update(UpdateTasks);
+                Task.WaitAll(UpdateTasks.ToArray());
+                
+                Thread.Sleep (30);
+                Statistics.GetStatistics().FramesPast++;
             }
         }
     }
