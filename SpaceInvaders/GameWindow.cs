@@ -12,7 +12,7 @@ namespace SpaceInvaders
         // Размеры интерфейсса
         private const int Height = 40;
         private const int WidthField = 60;
-        private const int WidthSidebar = 20;
+        private const int WidthSidebar = 22;
 
         // Графика отрисовки интерфейса
         private const char Lt = '╔';

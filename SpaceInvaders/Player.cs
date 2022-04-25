@@ -30,7 +30,7 @@ namespace SpaceInvaders
                 // Определяем начальную позицию
                 _instance._curPos = (_instance._field.Width / 2) - 1;
                 _instance._newPos = _instance._curPos;
-                _instance._field[_instance._curPos, _instance._field.Height - 1] = _instance;
+                _instance._field[_instance._curPos, _instance._field.Height ] = _instance;
             }
             return _instance;
         }
@@ -40,11 +40,11 @@ namespace SpaceInvaders
            {
                if (_toRender)
                {
-                    // Стираем старую позицию и рисуем новую, так же обновляем масссив для проверки коллизии
-                    _field.Write(_curPos, _field.Height , ' ');
-                   _field.Write(_newPos, _field.Height , 'P');
-                   _field[_curPos, _field.Height ] = null;
-                   _field[_newPos, _field.Height ] = this;
+                   // Стираем старую позицию и рисуем новую, так же обновляем масссив для проверки коллизии
+                   _field.Write(_curPos, _field.Height, ' ');
+                   _field.Write(_newPos, _field.Height, 'P');
+                   _field[_curPos, _field.Height] = null;
+                   _field[_newPos, _field.Height] = this;
 
                    _toRender = false;
                    _curPos = _newPos;
@@ -72,7 +72,7 @@ namespace SpaceInvaders
 
                 if (_gameWindow.Input.Key == ConsoleKey.Spacebar)
                 {
-                    _field.AddRocket(_curPos, _field.Height - 2);
+                    Rocket.AddRocket(_curPos, _field.Height - 1);
                     Statistics.GetStatistics().RocketUsed++;
                 }
             });

@@ -29,6 +29,7 @@ namespace SpaceInvaders
                 if (_toEliminate)
                 {
                     _field.Write(_left, _top, ' ');
+                    _field[_left, _top] = null;
                     return;
                 }
                 _field.Write(_left, _top, 'S');
@@ -40,10 +41,12 @@ namespace SpaceInvaders
 
         public void Eliminate()
         {
+            Statistics.GetStatistics().StructuresLost++;
             _toEliminate = true;
             _toRender = true;
         }
 
+        //TODO Убарать этот метод
         public async Task Update(List<Task> tasks)
         {
             return; //throw new NotImplementedException();

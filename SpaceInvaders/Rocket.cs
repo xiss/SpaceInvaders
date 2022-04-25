@@ -21,18 +21,18 @@ namespace SpaceInvaders
         public async Task Render(List<Task> tasks)
         {
             Task task = Task.Run(() =>
-           {
-               if (_toEliminate)
-               {
-                   _field.Write(_left, _curTop, ' ');
-                   _field[_left, _curTop] = null;
-                   return;
-               }
-               Field.GetFeild().Write(_left, _curTop, ' ');
-               _field[_left, _curTop] = null;
-               _field.Write(_left, _newTop, 'R');
-               _field[_left, _newTop] = this;
-           });
+            {
+                if (_toEliminate)
+                {
+                    _field.Write(_left, _curTop, ' ');
+                    _field[_left, _curTop] = null;
+                    return;
+                }
+                Field.GetFeild().Write(_left, _curTop, ' ');
+                _field[_left, _curTop] = null;
+                _field.Write(_left, _newTop, 'R');
+                _field[_left, _newTop] = this;
+            });
 
             tasks.Add(task);
             await task;
@@ -40,6 +40,8 @@ namespace SpaceInvaders
 
         public async Task Update(List<Task> tasks)
         {
+            //if(_toEliminate)return;
+            //TODO За первый выстрел должно удаляться одно строение а не два
             var task = Task.Run(() =>
             {
                 _curTop = _newTop;
@@ -63,6 +65,18 @@ namespace SpaceInvaders
         public void Eliminate()
         {
             _toEliminate = true;
+        }
+
+        public static void AddRocket(int left, int top)
+        {
+            Rocket newRocket = new Rocket(left, top);
+            // Проверяем, вдруг мы выстрелили в упор, если так уничтожаем ракету и объект
+            if (newRocket._field[left, top] is IEliminatable)
+            {
+                ((IEliminatable)newRocket._field[left, top]).Eliminate();
+                newRocket.Eliminate();
+            }
+            newRocket._field[left, top] = newRocket;
         }
     }
 }

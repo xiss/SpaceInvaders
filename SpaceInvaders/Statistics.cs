@@ -43,6 +43,19 @@ namespace SpaceInvaders
                 }
             }
         }
+
+        private int _structuresLost;
+        public int StructuresLost
+        {
+            get => _structuresLost;
+            set
+            {
+                lock (this)
+                {
+                    _structuresLost = value;
+                }
+            }
+        }
         private static Statistics _instance;
         private bool _toRender = true;
         private readonly int _startColumn;
@@ -55,6 +68,7 @@ namespace SpaceInvaders
             GameWindow.Write(startColomn, 1, "Ракет потрачено:");
             GameWindow.Write(startColomn, 2, "Врагов Убито:");
             GameWindow.Write(startColomn, 3, "Кадров прошло:");
+            GameWindow.Write(startColomn, 4, "Строений потеряно:");
         }
         public static Statistics GetStatistics(int startColumn, int lastColumn)
         {
@@ -82,6 +96,7 @@ namespace SpaceInvaders
                 GameWindow.Write(_lastColumn - RocketUsed.ToString().Length, 1, RocketUsed.ToString());
                 GameWindow.Write(_lastColumn - EnemyKilled.ToString().Length, 2, EnemyKilled.ToString());
                 GameWindow.Write(_lastColumn - FramesPast.ToString().Length, 3, FramesPast.ToString());
+                GameWindow.Write(_lastColumn - StructuresLost.ToString().Length, 4, StructuresLost.ToString());
             });
             tasks.Add(task);
             await task;

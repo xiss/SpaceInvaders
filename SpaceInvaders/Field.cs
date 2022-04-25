@@ -13,7 +13,6 @@ namespace SpaceInvaders
         public readonly int Height;
         public readonly int Width;
         private readonly IRenderable[,] _state;
-
         private Field() { }
 
         private Field(int width, int height)
@@ -47,16 +46,20 @@ namespace SpaceInvaders
                     _instance[i, 4] = new Enemy(i, 4);
                     _instance[i, 5] = new Enemy(i, 5);
                 }
+
                 //Добавляем строения
-                for (int i = 0; i < width; i++)
-                {
-                    if ((i / 5) % 2 == 0)
-                    {
-                        _instance[i, height - 4] = new Structure(i, height - 4);
-                        _instance[i, height - 2] = new Structure(i, height - 2);
-                        _instance[i, height - 3] = new Structure(i, height - 3);
-                    }
-                }
+                _instance[15, height - 4] = new Structure(15, height - 4);
+                _instance[15, height - 3] = new Structure(15, height - 3);
+                _instance[15, height - 2] = new Structure(15, height - 2);
+                //for (int i = 0; i < width; i++)
+                //{
+                //    if ((i / 5) % 2 == 0)
+                //    {
+                //        _instance[i, height - 4] = new Structure(i, height - 4);
+                //        _instance[i, height - 2] = new Structure(i, height - 2);
+                //        _instance[i, height - 3] = new Structure(i, height - 3);
+                //    }
+                //}
             }
             return _instance;
         }
@@ -78,14 +81,9 @@ namespace SpaceInvaders
             }
         }
 
-        //TODO может добавить эту функцию в классс игрока?
-        public void AddRocket(int left, int top)
-        {
-            _state[left, top] = new Rocket(left, top);
-        }
-
         public async Task Update(List<Task> tasks)
         {
+            var a = _state.Cast<IUpdatable>().Select(i => i).Where(i => i != null).ToList();
             foreach (var item in _state.Cast<IUpdatable>().Select(i => i).Where(i => i != null))
             {
                 Task task = Task.Run(() => item.Update(tasks));
