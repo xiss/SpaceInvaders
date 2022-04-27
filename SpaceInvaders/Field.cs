@@ -46,7 +46,6 @@ namespace SpaceInvaders
                     _instance[i, 4] = new Enemy(i, 4);
                     _instance[i, 5] = new Enemy(i, 5);
                 }
-
                 //Добавляем строения
                 _instance[15, height - 4] = new Structure(15, height - 4);
                 _instance[15, height - 3] = new Structure(15, height - 3);

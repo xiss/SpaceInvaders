@@ -101,5 +101,10 @@ namespace SpaceInvaders
             tasks.Add(task);
             await task;
         }
+
+        public void GameOver()
+        {
+            GameWindow.Write(_startColumn, 7, "ИГРА ОКОНЧЕНА!", ConsoleColor.Red);
+        }
     }
 }

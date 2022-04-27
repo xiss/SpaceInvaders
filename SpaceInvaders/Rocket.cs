@@ -10,11 +10,13 @@ namespace SpaceInvaders
         private int _newTop;
         private int _curTop;
         private bool _toEliminate;
+        private bool _dirToUp;
         private readonly Field _field;
-        public Rocket(int left, int top)
+        private Rocket(int left, int top, bool dirToUp)
         {
             _left = left;
             _newTop = top;
+            _dirToUp = dirToUp;
             _field = Field.GetFeild();
         }
 
@@ -41,17 +43,18 @@ namespace SpaceInvaders
         public async Task Update(List<Task> tasks)
         {
             //if(_toEliminate)return;
-            //TODO За первый выстрел должно удаляться одно строение а не два
+            //TODO За первый выстрел должно удаляться одно строение а не два, иногда ракеты игрока переживают столкновения с ракетами врагов
             var task = Task.Run(() =>
             {
                 _curTop = _newTop;
-                _newTop--;
-                //Проверяем столкновения
-                if (_newTop < 0)
+                _newTop += _dirToUp ? -1 : 1;
+                //Проверяем столкновения с краем карты
+                if (_newTop < 0 || _newTop > _field.Height)
                 {
                     Eliminate();
                     return;
                 }
+                // Проверяем столкновения с объектами
                 if (_field[_left, _newTop] is IEliminatable)
                 {
                     ((IEliminatable)_field[_left, _newTop]).Eliminate();
@@ -67,9 +70,9 @@ namespace SpaceInvaders
             _toEliminate = true;
         }
 
-        public static void AddRocket(int left, int top)
+        public static void AddRocket(int left, int top, bool dirToUp = true)
         {
-            Rocket newRocket = new Rocket(left, top);
+            Rocket newRocket = new Rocket(left, top, dirToUp);
             // Проверяем, вдруг мы выстрелили в упор, если так уничтожаем ракету и объект
             if (newRocket._field[left, top] is IEliminatable)
             {

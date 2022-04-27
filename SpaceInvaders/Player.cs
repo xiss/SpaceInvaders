@@ -5,7 +5,7 @@ using SpaceInvaders.Interfaces;
 
 namespace SpaceInvaders
 {
-    internal class Player : IRenderable, IUpdatable
+    internal class Player : IRenderable, IUpdatable, IEliminatable
     {
         private static Player _instance;
         private GameWindow _gameWindow;
@@ -13,10 +13,12 @@ namespace SpaceInvaders
         private bool _toRender;
         private int _curPos;
         private int _newPos;
+        public event Action Eliminated;
 
         private Player()
         {
             _toRender = true;
+            Eliminated += Game.GameOver;
         }
 
         public static Player GetPlayer()
@@ -30,7 +32,7 @@ namespace SpaceInvaders
                 // Определяем начальную позицию
                 _instance._curPos = (_instance._field.Width / 2) - 1;
                 _instance._newPos = _instance._curPos;
-                _instance._field[_instance._curPos, _instance._field.Height ] = _instance;
+                _instance._field[_instance._curPos, _instance._field.Height] = _instance;
             }
             return _instance;
         }
@@ -78,6 +80,11 @@ namespace SpaceInvaders
             });
             tasks.Add(task);
             await task;
+        }
+
+        public void Eliminate()
+        {
+            Eliminated?.Invoke();
         }
     }
 }

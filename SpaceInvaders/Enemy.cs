@@ -96,6 +96,9 @@ namespace SpaceInvaders
                     Eliminate();
                     ((Rocket)_field[_newLeft, _newTop]).Eliminate();
                 }
+
+                // Выпускаем ракету
+                addRocket();
                 _toRender = true;
             });
             tasks.Add(task);
@@ -106,6 +109,20 @@ namespace SpaceInvaders
         {
             _toEliminate = true;
             Statistics.GetStatistics().EnemyKilled++;
+        }
+
+        private void addRocket()
+        {
+            // Проверяем что внизу нет других врагов, и ессли выпало случайное число запускаем ракету
+            if (Game.Rnd.Next(1, 100) != 1 
+                || _field[_curLeft, _curTop + 1] != null
+                || _field[_curLeft, _curTop + 2] != null
+                || _field[_curLeft, _curTop + 3] != null
+                || _field[_curLeft, _curTop + 4] != null
+                || _field[_curLeft, _curTop + 5] != null
+                ) 
+                return;
+            Rocket.AddRocket(_curLeft,_curTop+1,false);
         }
     }
 }

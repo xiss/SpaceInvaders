@@ -110,12 +110,14 @@ namespace SpaceInvaders
             Write(left, top, ch.ToString());
         }
 
-        public static void Write(int left, int top, string str)
+        public static void Write(int left, int top, string str, ConsoleColor color = ConsoleColor.White)
         {
             lock (_instance)
             {
+                Console.ForegroundColor = color;
                 Console.SetCursorPosition(left, top);
                 Console.Write(str);
+                Console.ResetColor();
             }
         }
     }
