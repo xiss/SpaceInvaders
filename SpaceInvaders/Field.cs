@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SpaceInvaders.Interfaces;
 
@@ -40,21 +38,20 @@ namespace SpaceInvaders
                 _instance = new Field(width, height);
                 Player.GetPlayer();
                 //Добавляем врагов
-                _instance[20, 3] = new Enemy(20, 3);
                 for (int i = width / 4; i < width - width / 4; i = i + 2)
                 {
-                    //_instance[i, 3] = new Enemy(i, 3);
-                    //_instance[i, 4] = new Enemy(i, 4);
-                    //_instance[i, 5] = new Enemy(i, 5);
+                    _instance[i, 3] = new Enemy(i, 3);
+                    _instance[i, 4] = new Enemy(i, 4);
+                    _instance[i, 5] = new Enemy(i, 5);
                 }
                 //Добавляем строения
                 for (int i = 0; i < width; i++)
                 {
                     if ((i / 5) % 2 == 0)
                     {
-                        //_instance[i, height - 4] = new Structure(i, height - 4);
-                        //_instance[i, height - 2] = new Structure(i, height - 2);
-                        //_instance[i, height - 3] = new Structure(i, height - 3);
+                        _instance[i, height - 4] = new Structure(i, height - 4);
+                        _instance[i, height - 2] = new Structure(i, height - 2);
+                        _instance[i, height - 3] = new Structure(i, height - 3);
                     }
                 }
             }

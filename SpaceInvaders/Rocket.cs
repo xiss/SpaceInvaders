@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using SpaceInvaders.Interfaces;
 
@@ -7,6 +6,7 @@ namespace SpaceInvaders
 {
     internal class Rocket : IRenderable, IUpdatable, IEliminatable
     {
+        private const ConsoleColor Color = ConsoleColor.Red;
         private readonly int _left;
         private int _newTop;
         private int _curTop;
@@ -24,24 +24,29 @@ namespace SpaceInvaders
         public async Task Render()
         {
             await Task.Run(() =>
-            {                
+            {
                 if (_toEliminate)
                 {
                     _field.Write(_left, _curTop, ' ');
                     _field[_left, _curTop] = null;
                     return;
                 }
+                // Если две ракеты хотят переместится на одну клетку нужно уничтожить обе,
+                //TODO Передалать
+                if (_field[_left, _newTop] != null && _field[_left, _newTop] != this)
+                {
+                    (_field[_left, _newTop] as IEliminatable)?.Eliminate();
+                    Eliminate();
+                }
                 Field.GetFeild().Write(_left, _curTop, ' ');
                 _field[_left, _curTop] = null;
-                _field.Write(_left, _newTop, 'R');
+                _field.Write(_left, _newTop, 'R', Color);
                 _field[_left, _newTop] = this;
             });
         }
 
         public async Task Update()
         {
-            //if(_toEliminate)return;
-            //TODO иногда ракеты игрока переживают столкновения с ракетами врагов потомучто одновременно идут на одну клетку
             await Task.Run(() =>
             {
                 _curTop = _newTop;
@@ -53,7 +58,7 @@ namespace SpaceInvaders
                     return;
                 }
                 // Проверяем столкновения с объектами
-                  if (_field[_left, _newTop] is IEliminatable)
+                if (_field[_left, _newTop] is IEliminatable)
                 {
                     ((IEliminatable)_field[_left, _newTop]).Eliminate();
                     Eliminate();
@@ -62,7 +67,8 @@ namespace SpaceInvaders
         }
 
         public void Eliminate()
-        {
+        {            
+            Task.Run(()=> Console.Beep(200, 100));
             _toEliminate = true;
         }
 

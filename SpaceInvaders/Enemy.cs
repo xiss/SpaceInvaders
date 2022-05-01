@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using SpaceInvaders.Interfaces;
 
@@ -15,6 +13,7 @@ namespace SpaceInvaders
         private bool _toRender;
         private bool _toEliminate;
         private Field _field;
+        private const int RateOfFire = 100;
 
         private const ConsoleColor Color = ConsoleColor.DarkYellow;
         // Паттерн по которому будет двигаться рой
@@ -65,7 +64,7 @@ namespace SpaceInvaders
             await Task.Run(() =>
             {
                 // Движемся в соответссвии с патерном
-                // Джвижемсся раз в 30 кадров
+                // Джвижемся раз в 30 кадров
                 if (Statistics.GetStatistics().FramesPast % 30 == 0)
                 {
                     switch (_movingPattern[_movingState])
@@ -87,7 +86,7 @@ namespace SpaceInvaders
                                 _newLeft++;
                             break;
                     }
-                   //_movingState = _movingState == _movingPattern.Length - 1 ? 0 : ++_movingState;
+                   _movingState = _movingState == _movingPattern.Length - 1 ? 0 : ++_movingState;
                 }
 
                 // Если свободная клетка это ракета то уничтожаемся
@@ -112,7 +111,7 @@ namespace SpaceInvaders
         private void addRocket()
         {
             // Проверяем что внизу нет других врагов, и ессли выпало случайное число запускаем ракету
-            if (Game.Rnd.Next(1, 10) != 1
+            if (Game.Rnd.Next(1, RateOfFire) != 1
                 || _field[_curLeft, _curTop + 1] != null
                 || _field[_curLeft, _curTop + 2] != null
                 || _field[_curLeft, _curTop + 3] != null

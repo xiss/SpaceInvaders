@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace SpaceInvaders
@@ -39,7 +38,7 @@ namespace SpaceInvaders
                 await gameWindow.Render();
                 await gameWindow.Update();
 #warning test
-                Thread.Sleep (300);
+                Thread.Sleep (30);
                 Statistics.GetStatistics().FramesPast++;
             }
             Console.ReadKey();
