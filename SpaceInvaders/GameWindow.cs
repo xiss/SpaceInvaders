@@ -23,6 +23,7 @@ namespace SpaceInvaders
         private const char Ver = '║';
         private const char Mt = '╦';
         private const char Mb = '╩';
+        private const ConsoleColor Color = ConsoleColor.White;
 
         private Field _field;
         private Statistics _statistics;
@@ -50,67 +51,56 @@ namespace SpaceInvaders
 
         public ConsoleKeyInfo Input { get; set; }
 
-        public async Task Render(List<Task> tasks)
+        public async Task Render()
         {
-            Task task = Task.Run(() => RenderSelf(tasks));
-            tasks.Add(task);
-            await task;
-            task = Task.Run(() => _field.Render(tasks));
-            tasks.Add(task);
-            await task;
+            await Task.Run(() => RenderSelf());
+            await Task.Run(() => _field.Render());
         }
 
         private bool _toRender = true;
 
-        private async Task RenderSelf(List<Task> tasks)
+        private async Task RenderSelf()
         {
-            Task task = Task.Run(() =>
-              {
-                  if (!_toRender) return;
-                  // Рисуем углы
-                  Write(0, 0, Lt);
-                  Write(WidthField + WidthSidebar + 2, 0, Rt);
-                  Write(0, Height + 1, Lb);
-                  Write(WidthField + WidthSidebar + 2, Height + 1, Rb);
-                  // Рисуем вертикальные линии
-                  for (int h = 1; h < Height + 1; h++)
-                  {
-                      Write(0, h, Ver);
-                      Write(WidthField + 1, h, Ver);
-                      Write(WidthField + WidthSidebar + 2, h, Ver);
-                  }
-                  // Рисуем горизонтальные линии
-                  for (int w = 1; w < WidthField + WidthSidebar + 2; w++)
-                  {
-                      Write(w, 0, Hor);
-                      Write(w, Height + 1, Hor);
-                  }
-                  // Рисуем стыки
-                  Write(WidthField + 1, Height + 1, Mb);
-                  Write(WidthField + 1, 0, Mt);
-                  _toRender = false;
-              }
-           );
-            tasks.Add(task);
-            await task;
-            task = Task.Run(() => _statistics.Render(tasks));
-            tasks.Add(task);
-            await task;
+            await Task.Run(() =>
+            {
+                if (!_toRender) return;
+                // Рисуем углы
+                Write(0, 0, Lt, Color);
+                Write(WidthField + WidthSidebar + 2, 0, Rt, Color);
+                Write(0, Height + 1, Lb, Color);
+                Write(WidthField + WidthSidebar + 2, Height + 1, Rb, Color);
+                // Рисуем вертикальные линии
+                for (int h = 1; h < Height + 1; h++)
+                {
+                    Write(0, h, Ver, Color);
+                    Write(WidthField + 1, h, Ver, Color);
+                    Write(WidthField + WidthSidebar + 2, h, Ver, Color);
+                }
+                // Рисуем горизонтальные линии
+                for (int w = 1; w < WidthField + WidthSidebar + 2; w++)
+                {
+                    Write(w, 0, Hor, Color);
+                    Write(w, Height + 1, Hor, Color);
+                }
+                // Рисуем стыки
+                Write(WidthField + 1, Height + 1, Mb, Color);
+                Write(WidthField + 1, 0, Mt, Color);
+                _toRender = false;
+            });
+            await Task.Run(() => _statistics.Render());
         }
 
-        public async Task Update(List<Task> tasks)
+        public async Task Update()
         {
-            Task task = Task.Run(() => _field.Update(tasks));
-            tasks.Add(task);
-            await task;
+            await Task.Run(() => _field.Update());
         }
 
-        public static void Write(int left, int top, char ch)
+        public static void Write(int left, int top, char ch, ConsoleColor color)
         {
-            Write(left, top, ch.ToString());
+            Write(left, top, ch.ToString(), color);
         }
 
-        public static void Write(int left, int top, string str, ConsoleColor color = ConsoleColor.White)
+        public static void Write(int left, int top, string str, ConsoleColor color)
         {
             lock (_instance)
             {

@@ -8,6 +8,7 @@ namespace SpaceInvaders
     internal class Statistics : IRenderable
     {
         private int _rocketUsed;
+        private const ConsoleColor Color = ConsoleColor.White;
         public int RocketUsed
         {
             get => _rocketUsed;
@@ -65,10 +66,10 @@ namespace SpaceInvaders
         {
             _startColumn = startColomn;
             _lastColumn = lastColumn;
-            GameWindow.Write(startColomn, 1, "Ракет потрачено:");
-            GameWindow.Write(startColomn, 2, "Врагов Убито:");
-            GameWindow.Write(startColomn, 3, "Кадров прошло:");
-            GameWindow.Write(startColomn, 4, "Строений потеряно:");
+            GameWindow.Write(startColomn, 1, "Ракет потрачено:", Color);
+            GameWindow.Write(startColomn, 2, "Врагов Убито:", Color);
+            GameWindow.Write(startColomn, 3, "Кадров прошло:", Color);
+            GameWindow.Write(startColomn, 4, "Строений потеряно:", Color);
         }
         public static Statistics GetStatistics(int startColumn, int lastColumn)
         {
@@ -88,18 +89,16 @@ namespace SpaceInvaders
             return _instance;
         }
 
-        public async Task Render(List<Task> tasks)
+        public async Task Render()
         {
             if (!_toRender) return;
-            Task task = Task.Run(() =>
-            {
-                GameWindow.Write(_lastColumn - RocketUsed.ToString().Length, 1, RocketUsed.ToString());
-                GameWindow.Write(_lastColumn - EnemyKilled.ToString().Length, 2, EnemyKilled.ToString());
-                GameWindow.Write(_lastColumn - FramesPast.ToString().Length, 3, FramesPast.ToString());
-                GameWindow.Write(_lastColumn - StructuresLost.ToString().Length, 4, StructuresLost.ToString());
-            });
-            tasks.Add(task);
-            await task;
+            await Task.Run(() =>
+           {
+               GameWindow.Write(_lastColumn - RocketUsed.ToString().Length, 1, RocketUsed.ToString(), Color);
+               GameWindow.Write(_lastColumn - EnemyKilled.ToString().Length, 2, EnemyKilled.ToString(), Color);
+               GameWindow.Write(_lastColumn - FramesPast.ToString().Length, 3, FramesPast.ToString(), Color);
+               GameWindow.Write(_lastColumn - StructuresLost.ToString().Length, 4, StructuresLost.ToString(), Color);
+           });
         }
 
         public void GameOver()

@@ -15,6 +15,8 @@ namespace SpaceInvaders
         private bool _toRender;
         private bool _toEliminate;
         private Field _field;
+
+        private const ConsoleColor Color = ConsoleColor.DarkYellow;
         // Паттерн по которому будет двигаться рой
         private readonly ConsoleKey[] _movingPattern =
         {
@@ -36,33 +38,31 @@ namespace SpaceInvaders
             _field = Field.GetFeild();
             _toRender = true;
         }
-        public async Task Render(List<Task> tasks)
+        public async Task Render()
         {
             if (!_toRender) return;
 
-            Task task = Task.Run(() =>
+            await Task.Run(() =>
             {
                 if (_toEliminate)
                 {
-                    _field.Write(_curLeft, _curTop, ' ');
+                    _field.Write(_curLeft, _curTop, ' ', Color);
                     _field[_curLeft, _curTop] = null;
                     return;
                 }
-                _field.Write(_curLeft, _curTop, ' ');
+                _field.Write(_curLeft, _curTop, ' ', Color);
                 _field[_curLeft, _curTop] = null;
-                _field.Write(_newLeft, _newTop, 'E');
+                _field.Write(_newLeft, _newTop, 'E', Color);
                 _field[_newLeft, _newTop] = this;
                 _curLeft = _newLeft;
                 _curTop = _newTop;
                 _toRender = false;
             });
-            tasks.Add(task);
-            await task;
         }
 
-        public async Task Update(List<Task> tasks)
+        public async Task Update()
         {
-            Task task = Task.Run(() =>
+            await Task.Run(() =>
             {
                 // Движемся в соответссвии с патерном
                 // Джвижемсся раз в 30 кадров
@@ -87,7 +87,7 @@ namespace SpaceInvaders
                                 _newLeft++;
                             break;
                     }
-                    _movingState = _movingState == _movingPattern.Length - 1 ? 0 : ++_movingState;
+                   //_movingState = _movingState == _movingPattern.Length - 1 ? 0 : ++_movingState;
                 }
 
                 // Если свободная клетка это ракета то уничтожаемся
@@ -101,8 +101,6 @@ namespace SpaceInvaders
                 addRocket();
                 _toRender = true;
             });
-            tasks.Add(task);
-            await task;
         }
 
         public void Eliminate()
@@ -114,15 +112,15 @@ namespace SpaceInvaders
         private void addRocket()
         {
             // Проверяем что внизу нет других врагов, и ессли выпало случайное число запускаем ракету
-            if (Game.Rnd.Next(1, 100) != 1 
+            if (Game.Rnd.Next(1, 10) != 1
                 || _field[_curLeft, _curTop + 1] != null
                 || _field[_curLeft, _curTop + 2] != null
                 || _field[_curLeft, _curTop + 3] != null
                 || _field[_curLeft, _curTop + 4] != null
                 || _field[_curLeft, _curTop + 5] != null
-                ) 
+                )
                 return;
-            Rocket.AddRocket(_curLeft,_curTop+1,false);
+            Rocket.AddRocket(_curLeft, _curTop + 1, false);
         }
     }
 }

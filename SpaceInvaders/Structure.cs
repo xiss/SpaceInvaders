@@ -5,13 +5,14 @@ using SpaceInvaders.Interfaces;
 
 namespace SpaceInvaders
 {
-    internal class Structure : IRenderable, IEliminatable,IUpdatable
+    internal class Structure : IRenderable, IEliminatable
     {
         private bool _toEliminate;
         private readonly int _left;
         private readonly int _top;
         private bool _toRender;
         private readonly Field _field;
+        private const ConsoleColor Color = ConsoleColor.Blue;
 
         public Structure(int left, int top)
         {
@@ -21,22 +22,20 @@ namespace SpaceInvaders
             _toRender = true;
         }
 
-        public async Task Render(List<Task> tasks)
+        public async Task Render()
         {
-            Task task = Task.Run(() =>
+            await Task.Run(() =>
             {
                 if (!_toRender) return;
                 if (_toEliminate)
                 {
-                    _field.Write(_left, _top, ' ');
+                    _field.Write(_left, _top, ' ', Color);
                     _field[_left, _top] = null;
                     return;
                 }
-                _field.Write(_left, _top, 'S');
+                _field.Write(_left, _top, 'S', Color);
                 _toRender = false;
             });
-            tasks.Add(task);
-            await task;
         }
 
         public void Eliminate()
@@ -44,12 +43,6 @@ namespace SpaceInvaders
             Statistics.GetStatistics().StructuresLost++;
             _toEliminate = true;
             _toRender = true;
-        }
-
-        //TODO Убарать этот метод
-        public async Task Update(List<Task> tasks)
-        {
-            return; //throw new NotImplementedException();
         }
     }
 }

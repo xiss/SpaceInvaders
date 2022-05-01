@@ -36,29 +36,27 @@ namespace SpaceInvaders
             }
             return _instance;
         }
-        public async Task Render(List<Task> tasks)
+        public async Task Render()
         {
-            Task task = Task.Run(() =>
-           {
-               if (_toRender)
-               {
-                   // Стираем старую позицию и рисуем новую, так же обновляем масссив для проверки коллизии
-                   _field.Write(_curPos, _field.Height, ' ');
-                   _field.Write(_newPos, _field.Height, 'P');
-                   _field[_curPos, _field.Height] = null;
-                   _field[_newPos, _field.Height] = this;
+            await Task.Run(() =>
+            {
+                if (_toRender)
+                {
+                    // Стираем старую позицию и рисуем новую, так же обновляем масссив для проверки коллизии
+                    _field.Write(_curPos, _field.Height, ' ');
+                    _field.Write(_newPos, _field.Height, 'P');
+                    _field[_curPos, _field.Height] = null;
+                    _field[_newPos, _field.Height] = this;
 
-                   _toRender = false;
-                   _curPos = _newPos;
-               }
-           });
-            tasks.Add(task);
-            await task;
+                    _toRender = false;
+                    _curPos = _newPos;
+                }
+            });
         }
 
-        public async Task Update(List<Task> tasks)
+        public async Task Update()
         {
-            Task task = Task.Run(() =>
+            await Task.Run(() =>
             {
                 if (_gameWindow.Input.Key == ConsoleKey.A && _curPos > 0)
                 {
@@ -78,8 +76,6 @@ namespace SpaceInvaders
                     Statistics.GetStatistics().RocketUsed++;
                 }
             });
-            tasks.Add(task);
-            await task;
         }
 
         public void Eliminate()

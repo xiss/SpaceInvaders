@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Threading;
@@ -9,8 +10,6 @@ namespace SpaceInvaders
 {
     class Game
     {
-        public static List<Task> RenderTasks { get; } = new List<Task>();
-        public static List<Task> UpdateTasks { get; } = new List<Task>();
         public static Random Rnd;
         private static bool _gameOver;
         static Game()
@@ -37,19 +36,12 @@ namespace SpaceInvaders
                     }
                 }
                 // Запускаем все задачи на рендериг и обновление
-                //TODO Нужны WaitAll или нет?
-                RenderTasks.Clear();
-                await gameWindow.Render(RenderTasks);
-                Task.WaitAll(RenderTasks.ToArray());
-
-                UpdateTasks.Clear();
-                await gameWindow.Update(UpdateTasks);
-                Task.WaitAll(UpdateTasks.ToArray());
-                
-                Thread.Sleep (30);
+                await gameWindow.Render();
+                await gameWindow.Update();
+#warning test
+                Thread.Sleep (300);
                 Statistics.GetStatistics().FramesPast++;
             }
-
             Console.ReadKey();
         }
 

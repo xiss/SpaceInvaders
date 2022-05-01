@@ -40,25 +40,23 @@ namespace SpaceInvaders
                 _instance = new Field(width, height);
                 Player.GetPlayer();
                 //Добавляем врагов
+                _instance[20, 3] = new Enemy(20, 3);
                 for (int i = width / 4; i < width - width / 4; i = i + 2)
                 {
-                    _instance[i, 3] = new Enemy(i, 3);
-                    _instance[i, 4] = new Enemy(i, 4);
-                    _instance[i, 5] = new Enemy(i, 5);
+                    //_instance[i, 3] = new Enemy(i, 3);
+                    //_instance[i, 4] = new Enemy(i, 4);
+                    //_instance[i, 5] = new Enemy(i, 5);
                 }
                 //Добавляем строения
-                _instance[15, height - 4] = new Structure(15, height - 4);
-                _instance[15, height - 3] = new Structure(15, height - 3);
-                _instance[15, height - 2] = new Structure(15, height - 2);
-                //for (int i = 0; i < width; i++)
-                //{
-                //    if ((i / 5) % 2 == 0)
-                //    {
-                //        _instance[i, height - 4] = new Structure(i, height - 4);
-                //        _instance[i, height - 2] = new Structure(i, height - 2);
-                //        _instance[i, height - 3] = new Structure(i, height - 3);
-                //    }
-                //}
+                for (int i = 0; i < width; i++)
+                {
+                    if ((i / 5) % 2 == 0)
+                    {
+                        //_instance[i, height - 4] = new Structure(i, height - 4);
+                        //_instance[i, height - 2] = new Structure(i, height - 2);
+                        //_instance[i, height - 3] = new Structure(i, height - 3);
+                    }
+                }
             }
             return _instance;
         }
@@ -70,28 +68,24 @@ namespace SpaceInvaders
             return _instance;
         }
 
-        public async Task Render(List<Task> tasks)
+        public async Task Render()
         {
             foreach (var item in _state.Cast<IRenderable>().Select(i => i).Where(i => i != null))
             {
-                Task task = Task.Run(() => item.Render(tasks));
-                tasks.Add(task);
-                await task;
+                await Task.Run(() => item.Render());
             }
         }
 
-        public async Task Update(List<Task> tasks)
+        public async Task Update()
         {
-            var a = _state.Cast<IUpdatable>().Select(i => i).Where(i => i != null).ToList();
-            foreach (var item in _state.Cast<IUpdatable>().Select(i => i).Where(i => i != null))
+            // Как избавится от этого? 
+            foreach (var item in _state.Cast<object>().Select(i => i as IUpdatable).Where(i => i as IUpdatable != null))
             {
-                Task task = Task.Run(() => item.Update(tasks));
-                tasks.Add(task);
-                await task;
+                await Task.Run(() => item.Update());
             }
         }
 
-        public void Write(int left, int top, char ch)
+        public void Write(int left, int top, char ch, ConsoleColor color = ConsoleColor.White)
         {
             lock (_instance)
             {
@@ -99,7 +93,7 @@ namespace SpaceInvaders
                 {
                     throw new ArgumentOutOfRangeException();
                 }
-                GameWindow.Write(left + 1, top + 1, ch);
+                GameWindow.Write(left + 1, top + 1, ch, color);
             }
         }
     }

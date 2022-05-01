@@ -5,6 +5,6 @@ namespace SpaceInvaders.Interfaces
 {
     internal interface IUpdatable
     {
-        Task Update(List<Task> tasks);
+        Task Update();
     }
 }

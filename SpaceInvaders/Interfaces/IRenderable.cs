@@ -5,6 +5,6 @@ namespace SpaceInvaders.Interfaces
 {
     public interface IRenderable
     {
-        Task Render(List<Task> tasks);
+        Task Render();
     }
 }
