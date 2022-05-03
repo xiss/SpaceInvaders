@@ -26,7 +26,7 @@ namespace SpaceInvaders
             {
                 _instance = new Player();
                 _instance._gameWindow = GameWindow.GetGameWindow();
-                _instance._field = Field.GetFeild();
+                _instance._field = Field.GetField();
 
                 // Определяем начальную позицию
                 _instance._curPos = (_instance._field.Width / 2) - 1;
@@ -57,22 +57,20 @@ namespace SpaceInvaders
         {
             await Task.Run(() =>
             {
-                if (_gameWindow.Input.Key == ConsoleKey.A && _curPos > 0)
+                switch (_gameWindow.Input.Key)
                 {
-                    _newPos--;
-                    _toRender = true;
-                }
-
-                if (_gameWindow.Input.Key == ConsoleKey.D && _curPos < _field.Width)
-                {
-                    _newPos++;
-                    _toRender = true;
-                }
-
-                if (_gameWindow.Input.Key == ConsoleKey.Spacebar)
-                {
-                    Rocket.AddRocket(_curPos, _field.Height - 1);
-                    Statistics.GetStatistics().RocketUsed++;
+                    case ConsoleKey.A when _curPos > 0:
+                        _newPos--;
+                        _toRender = true;
+                        break;
+                    case ConsoleKey.D when _curPos < _field.Width:
+                        _newPos++;
+                        _toRender = true;
+                        break;
+                    case ConsoleKey.Spacebar:
+                        Rocket.AddRocket(_curPos, _field.Height - 1);
+                        Statistics.GetStatistics().RocketUsed++;
+                        break;
                 }
             });
         }

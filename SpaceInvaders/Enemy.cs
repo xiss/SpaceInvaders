@@ -34,7 +34,7 @@ namespace SpaceInvaders
         {
             _newLeft = left;
             _newTop = top;
-            _field = Field.GetFeild();
+            _field = Field.GetField();
             _toRender = true;
         }
         public async Task Render()

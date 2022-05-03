@@ -40,7 +40,7 @@ namespace SpaceInvaders
             if (_instance == null)
             {
                 _instance = new GameWindow();
-                _instance._field = Field.GetFeild(WidthField, Height);
+                _instance._field = Field.GetField(WidthField, Height);
                 _instance._statistics = Statistics.GetStatistics(WidthField + 2, WidthField + 2 + WidthSidebar);
             }
             return _instance;

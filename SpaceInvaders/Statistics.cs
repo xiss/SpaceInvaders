@@ -51,7 +51,7 @@ namespace SpaceInvaders
             set
             {
                 lock (this)
-                {
+                { 
                     _structuresLost = value;
                 }
             }
@@ -61,14 +61,14 @@ namespace SpaceInvaders
         private readonly int _startColumn;
         private readonly int _lastColumn;
 
-        private Statistics(int startColomn, int lastColumn)
+        private Statistics(int startColumn, int lastColumn)
         {
-            _startColumn = startColomn;
+            _startColumn = startColumn;
             _lastColumn = lastColumn;
-            GameWindow.Write(startColomn, 1, "Ракет потрачено:", Color);
-            GameWindow.Write(startColomn, 2, "Врагов Убито:", Color);
-            GameWindow.Write(startColomn, 3, "Кадров прошло:", Color);
-            GameWindow.Write(startColomn, 4, "Строений потеряно:", Color);
+            GameWindow.Write(startColumn, 1, "Ракет потрачено:", Color);
+            GameWindow.Write(startColumn, 2, "Врагов Убито:", Color);
+            GameWindow.Write(startColumn, 3, "Кадров прошло:", Color);
+            GameWindow.Write(startColumn, 4, "Строений потеряно:", Color);
         }
         public static Statistics GetStatistics(int startColumn, int lastColumn)
         {

@@ -17,7 +17,7 @@ namespace SpaceInvaders
         {
             _left = left;
             _top = top;
-            _field = Field.GetFeild();
+            _field = Field.GetField();
             _toRender = true;
         }
 

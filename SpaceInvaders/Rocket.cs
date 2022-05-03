@@ -18,7 +18,7 @@ namespace SpaceInvaders
             _left = left;
             _newTop = top;
             _dirToUp = dirToUp;
-            _field = Field.GetFeild();
+            _field = Field.GetField();
         }
 
         public async Task Render()
@@ -38,7 +38,7 @@ namespace SpaceInvaders
                     (_field[_left, _newTop] as IEliminatable)?.Eliminate();
                     Eliminate();
                 }
-                Field.GetFeild().Write(_left, _curTop, ' ');
+                Field.GetField().Write(_left, _curTop, ' ');
                 _field[_left, _curTop] = null;
                 _field.Write(_left, _newTop, 'R', Color);
                 _field[_left, _newTop] = this;

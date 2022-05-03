@@ -11,7 +11,6 @@ namespace SpaceInvaders
         public readonly int Height;
         public readonly int Width;
         private readonly IRenderable[,] _state;
-        private Field() { }
 
         private Field(int width, int height)
         {
@@ -31,7 +30,7 @@ namespace SpaceInvaders
             }
         }
 
-        public static Field GetFeild(int width, int height)
+        public static Field GetField(int width, int height)
         {
             if (_instance == null)
             {
@@ -58,7 +57,7 @@ namespace SpaceInvaders
             return _instance;
         }
 
-        public static Field GetFeild()
+        public static Field GetField()
         {
             if (_instance == null)
                 throw new NullReferenceException("Поле не было создано");
